@@ -30,7 +30,7 @@ const replaceTemplate = (temp,product)=>{
 //createServer() will accept a callback function, which will be fired off each time 
 //a new request hits our server. The callback function get access to request&response variable
 const server = http.createServer((req,res)=>{
-    const pathname = req.url;
+    const {query, pathname} = url.parse(req.url,true);//need to pass true here into this parse function in order to actually parse the query into an object
     //Overview
     if (pathname ==='/' || pathname ==='/overview'){
         res.writeHead(200,{//write to header
@@ -45,7 +45,11 @@ const server = http.createServer((req,res)=>{
 
     //Product
     }else if (pathname ==='/product'){
-        res.end('This is the PRODUCT');
+        res.writeHead(200,{//write to header
+            'Content-Type': 'text/html'});
+        const item = dataobj[query.id];
+        const output =replaceTemplate(product,item);
+        res.end(output);
 
     //API
     }else if (pathname==='/api'){
